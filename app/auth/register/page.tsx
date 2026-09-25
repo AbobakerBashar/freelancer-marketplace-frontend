@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import Link from "next/dist/client/link";
 
-import { useRegisterUser } from "@/hooks/auth";
+import { useRegisterUser } from "@/features/auth/hooks";
 import { RegisterInput, registerSchema } from "@/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
