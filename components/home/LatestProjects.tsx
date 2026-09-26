@@ -71,7 +71,13 @@ const LatestProjects = ({ latestProjects }: Props) => {
 								<div className="mt-5 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
 									<div className="flex items-center gap-2">
 										<DollarSign className="size-4 text-primary" />
-										<span>{formatBudget(project)}</span>
+										<span>
+											{formatBudget(
+												project.budgetMin,
+												project.budgetMax,
+												project.currency,
+											)}
+										</span>
 									</div>
 									<div className="flex items-center gap-2">
 										<Clock3 className="size-4 text-primary" />

@@ -9,7 +9,7 @@ export type CategoriesRes = {
 	categories: Category[];
 };
 
-type BudgetType = "FIXED" | "HOURLY";
+export type BudgetType = "FIXED" | "HOURLY";
 
 type DurationUnit = "HOURS" | "DAYS" | "WEEKS" | "MONTHS";
 
@@ -63,4 +63,29 @@ export type ProjectResponse = {
 	success: boolean;
 	message?: string;
 	project?: Project;
+};
+
+export type ProjectSortField =
+	| "createdAt"
+	| "budgetMin"
+	| "budgetMax"
+	| "deadline";
+
+export type ProjectQueryParams = {
+	page?: number;
+	limit?: number;
+
+	search?: string;
+
+	category?: string;
+	status?: string;
+	budgetType?: string;
+
+	clientId?: string;
+
+	minBudget?: number;
+	maxBudget?: number;
+
+	sort?: string;
+	order?: "asc" | "desc";
 };
