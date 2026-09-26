@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useSignInUser } from "@/hooks/auth";
+import { useSignInUser } from "@/features/auth/hooks";
 import { LoginInput, loginSchema } from "@/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useRouter } from "next/navigation";
