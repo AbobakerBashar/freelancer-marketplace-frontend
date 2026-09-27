@@ -31,7 +31,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 		>
 			<QueryProvider>
 				<NuqsAdapter>
-					{/* <SidebarProvider> */}
 					<body className="min-h-screen bg-background text-foreground">
 						{children}
 						<Toaster position="bottom-right" />

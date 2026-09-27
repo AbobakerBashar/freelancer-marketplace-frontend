@@ -14,8 +14,50 @@ const COOKIE_OPTIONS: {
 
 import { LoginInput, RegisterInput } from "@/schemas/auth";
 import api from "@/utils/api";
+import { getAuthToken } from "@/utils/auth";
 import axios from "axios";
 import { cookies } from "next/dist/server/request/cookies";
+import type { AuthResponse } from "./types";
+
+export const getUser = async (): Promise<AuthResponse> => {
+	try {
+		const token = await getAuthToken();
+		if (!token) {
+			return {
+				success: false,
+				message: "No token found.",
+				user: null,
+			};
+		}
+
+		const response = await api.get("/auth/me", {
+			headers: {
+				cookie: `jwt=${token}`,
+			},
+		});
+
+		return {
+			success: true,
+			message: "User fetched successfully.",
+			user: response.data.user,
+		};
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			if (error.response?.data) return error.response?.data;
+			else
+				return {
+					success: false,
+					message: "An error occurred while fetching the user.",
+					user: null,
+				};
+		}
+		return {
+			success: false,
+			message: "An error occurred while fetching the user.",
+			user: null,
+		};
+	}
+};
 
 export const registerUser = async (data: RegisterInput) => {
 	const cookieStore = await cookies();
