@@ -9,7 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../ui/card";
-import { formatBudget, formatDuration, formatStatus } from "@/lib/utils";
+import { formatBudget, formatDuration, formatStatus } from "@/utils/projects";
 
 type Props = {
 	latestProjects: Project[];

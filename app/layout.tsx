@@ -1,11 +1,10 @@
 import { QueryProvider } from "@/providers/QueryProvider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-import SidebarProvider from "@/providers/SidebarProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
-import { Suspense } from "react";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -32,13 +31,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 		>
 			<QueryProvider>
 				<NuqsAdapter>
-					<Suspense>
-						{/* <SidebarProvider> */}
-						<body className="min-h-screen bg-background text-foreground">
-							{children}
-						</body>
-						{/* </SidebarProvider> */}
-					</Suspense>
+					{/* <SidebarProvider> */}
+					<body className="min-h-screen bg-background text-foreground">
+						{children}
+						<Toaster position="bottom-right" />
+					</body>
 				</NuqsAdapter>
 			</QueryProvider>
 		</html>

@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getStatusColor } from "@/lib/utils";
+import { getStatusColor } from "@/utils/projects";
 
 type Props = {
 	params: Promise<{
@@ -146,9 +146,12 @@ const ProjectDetails = async ({ params }: Props) => {
 									</p>
 								</div>
 							)}
-							<Button className="w-full mt-4" size="lg">
+							<Link
+								href={`/projects/${projectId}/proposal`}
+								className="w-full block text-center mt-4 px-4 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 duration-300"
+							>
 								Submit a Proposal
-							</Button>
+							</Link>
 						</CardContent>
 					</Card>
 				</div>
@@ -197,7 +200,12 @@ const ProjectDetails = async ({ params }: Props) => {
 					fit for this job.
 				</p>
 				<div className="flex gap-4 justify-center flex-wrap">
-					<Button size="lg">Submit a Proposal</Button>
+					<Link
+						href={`/projects/${projectId}/proposal`}
+						className="px-4 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 duration-300"
+					>
+						Submit a Proposal
+					</Link>
 					<Button variant="outline" size="lg">
 						Contact Client
 					</Button>

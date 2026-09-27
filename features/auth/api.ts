@@ -12,8 +12,8 @@ const COOKIE_OPTIONS: {
 	maxAge: 3 * 24 * 60 * 60 * 1000,
 };
 
-import api from "@/lib/utils";
 import { LoginInput, RegisterInput } from "@/schemas/auth";
+import api from "@/utils/api";
 import axios from "axios";
 import { cookies } from "next/dist/server/request/cookies";
 

@@ -1,4 +1,4 @@
-import api from "@/lib/utils";
+import api from "@/utils/api";
 import { CategoriesRes, ProjectResponse, ProjectsResponse } from "./types";
 import axios from "axios";
 
