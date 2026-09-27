@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { submitProposal } from "./api";
+import { submitProposal, updateProposal } from "./api";
 import { ProposalInput } from "./types";
 
 export const useSubmitProposal = () => {
@@ -12,5 +12,18 @@ export const useSubmitProposal = () => {
 			data: ProposalInput;
 			projectId: string;
 		}) => submitProposal(projectId, data),
+	});
+};
+
+export const useUpdateProposal = () => {
+	return useMutation({
+		mutationKey: ["updateProposal"],
+		mutationFn: async ({
+			data,
+			proposalId,
+		}: {
+			data: ProposalInput & { projectId: string };
+			proposalId: string;
+		}) => updateProposal(proposalId, data),
 	});
 };

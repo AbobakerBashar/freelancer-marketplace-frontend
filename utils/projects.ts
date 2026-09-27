@@ -1,10 +1,12 @@
 import { Project } from "@/features/projects/types";
+import { ProposalStatus } from "@/features/proposals/types";
 
-export const currencyFormatter = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
+export const currencyFormatter = (currency: string) =>
+	new Intl.NumberFormat("en-US", {
+		style: "currency",
+		currency,
+		maximumFractionDigits: 0,
+	});
 
 export const formatBudget = (
 	min: number | null,
@@ -42,4 +44,14 @@ export const getStatusColor = (status: string) => {
 		CLOSED: "bg-gray-200 text-gray-800",
 	};
 	return colors[status] || "bg-gray-100 text-gray-800";
+};
+
+export const proposalStatusStyles: Record<ProposalStatus, string> = {
+	PENDING: "bg-secondary text-secondary-foreground",
+	// Shortlisted: "bg-accent text-accent-foreground",
+	// Interviewing:
+	// 	"bg-amber-100 text-amber-900 dark:bg-amber-500/20 dark:text-amber-200",
+	ACCEPTED: "bg-success/15 text-success",
+	REJECTED: "bg-destructive/10 text-destructive",
+	WITHDRAWN: "bg-muted text-muted-foreground",
 };
