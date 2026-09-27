@@ -1,5 +1,5 @@
 import type { Project } from "@/features/projects/types";
-import { formatBudget, getStatusColor } from "@/lib/utils";
+import { formatBudget, getStatusColor } from "@/utils/projects";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
