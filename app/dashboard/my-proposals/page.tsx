@@ -74,7 +74,7 @@ const MyProposalsPage = async () => {
 				<StatCard label="Withdrawn" value={stats?.withdrawn || 0} />
 			</section>
 
-			<ProposalsList proposals={proposals} />
+			<ProposalsList proposals={proposals} isClient={false} />
 		</main>
 	);
 };

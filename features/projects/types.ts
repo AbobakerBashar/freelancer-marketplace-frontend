@@ -1,3 +1,6 @@
+import { projectCreateSchema, projectEditSchema } from "@/schemas/project";
+import z from "zod";
+
 export type Category = {
 	category: string;
 	count: number;
@@ -60,9 +63,11 @@ export type ProjectsResponse = {
 };
 
 export type ProjectResponse = {
+	statusCode?: number;
 	success: boolean;
 	message?: string;
 	project?: Project;
+	errors?: Record<string, string>;
 };
 
 export type ProjectSortField =
@@ -89,3 +94,22 @@ export type ProjectQueryParams = {
 	sort?: string;
 	order?: "asc" | "desc";
 };
+
+export type Stats = {
+	totalProjects: number;
+	status: {
+		status: ProjectStatus;
+		count: number;
+	}[];
+};
+
+export type ProjectStatistics = {
+	success: boolean;
+	message?: string;
+	stats?: Stats;
+};
+export type ProjectFormInput = z.input<typeof projectCreateSchema>;
+export type ProjectFormOutput = z.output<typeof projectCreateSchema>;
+
+export type ProjectEditFormInput = z.input<typeof projectEditSchema>;
+export type ProjectEditFormOutput = z.output<typeof projectEditSchema>;

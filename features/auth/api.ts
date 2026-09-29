@@ -5,18 +5,20 @@ const COOKIE_OPTIONS: {
 	secure: boolean;
 	sameSite: "lax" | "none";
 	maxAge: number;
+	path: "/";
 } = {
 	httpOnly: true,
 	secure: process.env.NODE_ENV === "production",
 	sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 	maxAge: 3 * 24 * 60 * 60 * 1000,
+	path: "/",
 };
 
 import { LoginInput, RegisterInput } from "@/schemas/auth";
 import api from "@/utils/api";
 import { getAuthToken } from "@/utils/auth";
 import axios from "axios";
-import { cookies } from "next/dist/server/request/cookies";
+import { cookies } from "next/headers";
 import type { AuthResponse } from "./types";
 
 export const getUser = async (): Promise<AuthResponse> => {
@@ -115,4 +117,9 @@ export const signInUser = async (data: LoginInput) => {
 			message: "An error occurred while registering the user.",
 		};
 	}
+};
+
+export const signOutUser = async () => {
+	const cookieStore = await cookies();
+	cookieStore.delete("jwt");
 };

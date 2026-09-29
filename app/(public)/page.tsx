@@ -2,10 +2,7 @@ import Hero from "@/components/Hero";
 import LatestProjects from "@/components/home/LatestProjects";
 import PopularCategories from "@/components/home/PopularCategories";
 import HowItWorks from "@/components/home/HowItWorks";
-import {
-	getPopularCategories,
-	getProjects,
-} from "@/features/projects/projects";
+import { getPopularCategories, getProjects } from "@/features/projects/api";
 import CTASection from "@/components/home/CTASection";
 
 const fetchData = async () => {

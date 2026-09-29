@@ -64,7 +64,15 @@ export type UserProposalsStats = {
 	};
 };
 
+export type ProposalsResponse = {
+	statusCode?: number;
+	success: boolean;
+	message: string;
+	proposals?: Proposal[];
+};
+
 export type ProposalResponse = {
+	statusCode?: number;
 	success: boolean;
 	message: string;
 	proposal?: Proposal;
