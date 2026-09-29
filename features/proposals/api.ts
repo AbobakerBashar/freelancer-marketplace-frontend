@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import type {
 	ProposalInput,
 	ProposalResponse,
+	ProposalsResponse,
 	SubmitProposalResponse,
 	UpdateProposalResponse,
 	UserProposalsResponse,
@@ -138,6 +139,30 @@ export const getUserProposalById = async (
 	}
 };
 
+export const getProjectProposals = async (
+	projectId: string,
+): Promise<ProposalsResponse> => {
+	try {
+		const res = await api.get(`/projects/${projectId}/proposals`);
+		return res.data;
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			return {
+				success: false,
+				statusCode: error.response?.status || 500,
+				message:
+					error.response?.data?.message ||
+					"An error occurred while fetching the proposals.",
+			};
+		} else
+			return {
+				statusCode: 500,
+				success: false,
+				message: "An error occurred while fetching the proposals.",
+			};
+	}
+};
+
 export const updateProposal = async (
 	proposalId: string,
 	data: ProposalInput & { projectId: string },
@@ -169,6 +194,73 @@ export const updateProposal = async (
 			return {
 				success: false,
 				message: "An error occurred while updating the proposal.",
+			};
+	}
+};
+
+export const acceptProposal = async (
+	proposalId: string,
+): Promise<ProposalResponse> => {
+	try {
+		const token = await getAuthToken();
+
+		const res = await api.post(
+			`/proposals/${proposalId}/accept`,
+			{},
+			{
+				headers: {
+					Cookie: `jwt=${token}`,
+				},
+			},
+		);
+
+		return res.data;
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			return {
+				success: false,
+				message: error.response?.data?.message || "",
+				statusCode: error.response?.status || 500,
+			};
+		} else
+			return {
+				success: false,
+				message: "",
+				statusCode: 500,
+			};
+	}
+};
+
+export const rejectProposal = async (
+	proposalId: string,
+): Promise<ProposalResponse> => {
+	try {
+		const token = await getAuthToken();
+		if (!token) if (!token) redirect("/auth/signin");
+
+		const res = await api.post(
+			`/proposals/${proposalId}/reject`,
+			{},
+			{
+				headers: {
+					cookie: `jwt=${token}`,
+				},
+			},
+		);
+
+		return res.data;
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			return {
+				success: false,
+				message: error.response?.data?.message || "",
+				statusCode: error.response?.status || 500,
+			};
+		} else
+			return {
+				success: false,
+				message: "",
+				statusCode: 500,
 			};
 	}
 };

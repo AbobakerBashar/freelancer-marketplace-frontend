@@ -1,9 +1,6 @@
 import ProjectsContent from "@/components/projects/ProjectsContent";
 import SearchSection from "@/components/projects/SearchSection";
-import {
-	getPopularCategories,
-	getProjects,
-} from "@/features/projects/projects";
+import { getPopularCategories, getProjects } from "@/features/projects/api";
 import type { ProjectQueryParams } from "@/features/projects/types";
 
 import type { Metadata } from "next";

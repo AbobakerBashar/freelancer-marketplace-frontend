@@ -1,4 +1,6 @@
 import type { Proposal } from "@/features/proposals/types";
+import { currencyFormatter, proposalStatusStyles } from "@/utils/projects";
+import { Badge } from "../ui/badge";
 import {
 	Card,
 	CardContent,
@@ -6,18 +8,16 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { currencyFormatter, proposalStatusStyles } from "@/utils/projects";
-import { Button } from "../ui/button";
 
 import { format, formatDistanceToNow } from "date-fns";
-import Link from "next/link";
+import ProposalActions from "./ProposalActions";
 
 type Props = {
 	proposals: Proposal[];
+	isClient: boolean;
 };
 
-const ProposalsList = ({ proposals }: Props) => {
+const ProposalsList = ({ proposals, isClient }: Props) => {
 	return (
 		<section className="space-y-4">
 			{proposals.map((proposal) => (
@@ -44,18 +44,13 @@ const ProposalsList = ({ proposals }: Props) => {
 								})}
 							</CardDescription>
 						</div>
-						<div className="flex gap-2">
-							<Link href={`/dashboard/my-proposals/${proposal.id}`}>
-								<Button variant="default" size="sm">
-									Edit proposal
-								</Button>
-							</Link>
-							<Link href={`/projects/${proposal.projectId}`}>
-								<Button variant="outline" size="sm">
-									View project
-								</Button>
-							</Link>
-						</div>
+
+						{/* Proposal Actions */}
+						<ProposalActions
+							isClient={isClient}
+							proposalId={proposal.id}
+							proposalStatus={proposal.status}
+						/>
 					</CardHeader>
 
 					<CardContent className="space-y-6">
