@@ -76,7 +76,6 @@ export const registerUser = async (data: RegisterInput) => {
 		};
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
-			console.error("Axios error:", error.response?.data);
 			if (error.response?.data) return error.response?.data;
 			else
 				return {
@@ -108,8 +107,6 @@ export const signInUser = async (data: LoginInput) => {
 		};
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
-			console.error("Axios error:", error.response?.data);
-
 			if (error.response?.data) return error.response?.data;
 			else
 				return {
