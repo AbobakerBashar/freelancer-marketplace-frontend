@@ -76,11 +76,14 @@ export const registerUser = async (data: RegisterInput) => {
 		};
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
+			console.error("Axios error:", error.response?.data);
 			if (error.response?.data) return error.response?.data;
 			else
 				return {
 					success: false,
-					message: "An error occurred while registering the user.",
+					message:
+						error.response?.data?.message ||
+						"An error occurred while registering the user.",
 				};
 		}
 		return {
@@ -105,16 +108,20 @@ export const signInUser = async (data: LoginInput) => {
 		};
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
+			console.error("Axios error:", error.response?.data);
+
 			if (error.response?.data) return error.response?.data;
 			else
 				return {
 					success: false,
-					message: "An error occurred while registering the user.",
+					message:
+						error.response?.data?.message ||
+						"An error occurred while signing in the user.",
 				};
 		}
 		return {
 			success: false,
-			message: "An error occurred while registering the user.",
+			message: "An error occurred while signing in the user.",
 		};
 	}
 };
