@@ -36,6 +36,9 @@ export default async function Page({ params }: Props) {
 
 	const { project, proposals } = await fetchData(projectId);
 
+	const isAllowedToEdit =
+		project.status === "OPEN" || project.status === "DRAFT";
+
 	return (
 		<main className="page-container min-h-screen bg-linear-to-b from-background to-muted/20 py-12 space-y-12">
 			<div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
@@ -48,37 +51,38 @@ export default async function Page({ params }: Props) {
 				</Link>
 			</div>
 
-			<ProjectCard project={project} />
-
+			<ProjectCard project={project} isDetailed />
 			{/* Proposals */}
-			<section>
-				<h2 className="text-lg font-semibold">Proposals</h2>
-				<p className="text-sm text-muted-foreground">
-					Submissions for this project
-				</p>
-				<div className="mt-4">
-					{proposals.length ? (
-						<ProposalsList proposals={proposals} isClient />
-					) : (
-						<Card className="border-border/70 bg-card/90">
-							<CardContent className="py-12 text-center">
-								<h2 className="text-2xl font-semibold">
-									No proposals posted yet
-								</h2>
+			{isAllowedToEdit && (
+				<section>
+					<h2 className="text-lg font-semibold">Proposals</h2>
+					<p className="text-sm text-muted-foreground">
+						Submissions for this project
+					</p>
+					<div className="mt-4">
+						{proposals.length ? (
+							<ProposalsList proposals={proposals} isClient />
+						) : (
+							<Card className="border-border/70 bg-card/90">
+								<CardContent className="py-12 text-center">
+									<h2 className="text-2xl font-semibold">
+										No proposals posted yet
+									</h2>
 
-								<Link
-									href={`/dashboard/my-projects/${projectId}/edit`}
-									className="mt-6 block"
-								>
-									<Button size="lg" className="px-5">
-										Edit Project
-									</Button>
-								</Link>
-							</CardContent>
-						</Card>
-					)}
-				</div>
-			</section>
+									<Link
+										href={`/dashboard/my-projects/${projectId}/edit`}
+										className="mt-6 block"
+									>
+										<Button size="lg" className="px-5">
+											Edit Project
+										</Button>
+									</Link>
+								</CardContent>
+							</Card>
+						)}
+					</div>
+				</section>
+			)}
 		</main>
 	);
 }

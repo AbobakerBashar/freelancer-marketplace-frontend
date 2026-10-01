@@ -13,6 +13,7 @@ import type {
 	UserProposalsResponse,
 	UserProposalsStats,
 } from "./types";
+import { getUser } from "../auth/api";
 
 export async function submitProposal(
 	projectId: string,
@@ -107,27 +108,29 @@ export const getUserProposalsStats = async (): Promise<UserProposalsStats> => {
 	}
 };
 
-export const getUserProposalById = async (
+export const getProposalById = async (
 	proposalId: string,
 ): Promise<ProposalResponse> => {
 	try {
-		const token = await getAuthToken();
+		const user = await getUser();
 
-		if (!token) redirect("/auth/signin");
+		if (!user.user) redirect("/auth/signin");
 
-		const res = await api.get(`/proposals/my/${proposalId}`, {
-			headers: {
-				cookie: `jwt=${token}`,
-			},
-		});
+		const res = await api.get(
+			`/proposals/${proposalId}?freelancerId=${user.user.id}`,
+		);
 		return res.data;
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
-			if (error.response?.data?.errors) return error.response.data.errors;
-			else if (error.response?.data?.message)
-				return { success: false, message: error.response.data.message };
+			if (error.response?.data?.message)
+				return {
+					statusCode: error.response?.status || 500,
+					success: false,
+					message: error.response.data.message,
+				};
 			else
 				return {
+					statusCode: error.response?.status || 500,
 					success: false,
 					message: "An error occurred while fetching the proposal.",
 				};
@@ -240,6 +243,40 @@ export const rejectProposal = async (
 
 		const res = await api.post(
 			`/proposals/${proposalId}/reject`,
+			{},
+			{
+				headers: {
+					cookie: `jwt=${token}`,
+				},
+			},
+		);
+
+		return res.data;
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			return {
+				success: false,
+				message: error.response?.data?.message || "",
+				statusCode: error.response?.status || 500,
+			};
+		} else
+			return {
+				success: false,
+				message: "",
+				statusCode: 500,
+			};
+	}
+};
+
+export const withdraw = async (
+	proposalId: string,
+): Promise<ProposalResponse> => {
+	try {
+		const token = await getAuthToken();
+		if (!token) if (!token) redirect("/auth/signin");
+
+		const res = await api.post(
+			`/proposals/${proposalId}/withdraw`,
 			{},
 			{
 				headers: {

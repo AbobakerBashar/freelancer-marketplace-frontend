@@ -4,6 +4,7 @@ import {
 	rejectProposal,
 	submitProposal,
 	updateProposal,
+	withdraw,
 } from "./api";
 import { ProposalInput } from "./types";
 
@@ -42,5 +43,11 @@ export const useAcceptProposal = () => {
 export const useRejectProposal = () => {
 	return useMutation({
 		mutationFn: async (proposalId: string) => await rejectProposal(proposalId),
+	});
+};
+
+export const useWithdraw = () => {
+	return useMutation({
+		mutationFn: withdraw,
 	});
 };

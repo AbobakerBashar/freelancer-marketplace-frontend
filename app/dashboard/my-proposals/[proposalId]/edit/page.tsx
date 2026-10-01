@@ -1,6 +1,6 @@
 import EditProposalForm from "@/components/dashboard/EditProposalForm";
 import ProposalTips from "@/components/projects/ProposalTips";
-import { getUserProposalById } from "@/features/proposals/api";
+import { getProposalById } from "@/features/proposals/api";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -19,7 +19,7 @@ type Props = {
 
 const EditMyProposalPage = async ({ params }: Props) => {
 	const { proposalId } = await params;
-	const { proposal } = await getUserProposalById(proposalId);
+	const { proposal } = await getProposalById(proposalId);
 
 	if (!proposal) notFound();
 

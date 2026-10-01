@@ -9,14 +9,23 @@ import {
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
 import { ProposalStatus } from "@/features/proposals/types";
+import { useRouter } from "next/navigation";
 
 type Props = {
 	isClient: boolean;
 	proposalId: string;
+	projectId: string;
 	proposalStatus: ProposalStatus;
 };
 
-function ProposalActions({ isClient, proposalId, proposalStatus }: Props) {
+function ProposalActions({
+	isClient,
+	proposalId,
+	projectId,
+	proposalStatus,
+}: Props) {
+	const router = useRouter();
+
 	const { mutateAsync: acceptProposla, isPending: isAccepting } =
 		useAcceptProposal();
 
@@ -29,6 +38,7 @@ function ProposalActions({ isClient, proposalId, proposalStatus }: Props) {
 		const res = await acceptProposla(proposalId);
 		if (res.success) {
 			toast.success("Proposal accepted successfully!");
+			router.refresh();
 		} else {
 			toast.error(res.message);
 		}
@@ -39,6 +49,7 @@ function ProposalActions({ isClient, proposalId, proposalStatus }: Props) {
 
 		const res = await rejectProposal(proposalId);
 		if (res.success) {
+			router.refresh();
 			toast.success("Proposal rejected successfully!");
 		} else {
 			toast.error(res.message);
@@ -82,12 +93,12 @@ function ProposalActions({ isClient, proposalId, proposalStatus }: Props) {
 				</div>
 			) : (
 				<div className="flex gap-2">
-					<Link href={`/dashboard/my-proposals/${proposalId}`}>
+					<Link href={`/dashboard/my-proposals/${proposalId}/view`}>
 						<Button variant="default" size="sm">
-							Edit proposal
+							View proposal
 						</Button>
 					</Link>
-					<Link href={`/projects/${proposalId}`}>
+					<Link href={`/projects/${projectId}`}>
 						<Button variant="outline" size="sm">
 							View project
 						</Button>

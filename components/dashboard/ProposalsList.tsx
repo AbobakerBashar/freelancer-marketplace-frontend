@@ -49,6 +49,7 @@ const ProposalsList = ({ proposals, isClient }: Props) => {
 						<ProposalActions
 							isClient={isClient}
 							proposalId={proposal.id}
+							projectId={proposal.projectId}
 							proposalStatus={proposal.status}
 						/>
 					</CardHeader>

@@ -24,6 +24,9 @@ export type Proposal = {
 		title: string;
 		currency: string;
 		skills: string[];
+		description: string;
+		budgetMax?: number;
+		budgetMin?: number;
 		client: {
 			name: string;
 		};

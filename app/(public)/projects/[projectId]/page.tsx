@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getStatusColor } from "@/utils/projects";
+import { format } from "date-fns";
 
 type Props = {
 	params: Promise<{
@@ -45,6 +46,9 @@ const formatCurrency = (amount: number, currency: string) => {
 const ProjectDetails = async ({ params }: Props) => {
 	const { projectId } = await params;
 	const project = await fetchProject(projectId);
+
+	const isAcceptingProposals =
+		project.status === "OPEN" || project.status === "DRAFT";
 
 	return (
 		<main className="page-container min-h-screen bg-linear-to-b from-background to-muted/20 py-12">
@@ -146,12 +150,18 @@ const ProjectDetails = async ({ params }: Props) => {
 									</p>
 								</div>
 							)}
-							<Link
-								href={`/projects/${projectId}/proposal`}
-								className="w-full block text-center mt-4 px-4 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 duration-300"
-							>
-								Submit a Proposal
-							</Link>
+							{isAcceptingProposals ? (
+								<Link
+									href={`/projects/${projectId}/proposal`}
+									className="w-full block text-center mt-4 px-4 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 duration-300"
+								>
+									Submit a Proposal
+								</Link>
+							) : (
+								<p className="text-sm text-muted-foreground mt-4 p-4 border rounded-2xl">
+									This project is no longer accepting proposals.
+								</p>
+							)}
 						</CardContent>
 					</Card>
 				</div>
@@ -167,22 +177,14 @@ const ProjectDetails = async ({ params }: Props) => {
 						<div className="flex justify-between items-center pb-4 border-b">
 							<span className="text-sm text-muted-foreground">Posted On</span>
 							<span className="font-medium">
-								{new Date(project.createdAt).toLocaleDateString("en-US", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})}
+								{format(project.createdAt, "MMMM d, yyyy")}
 							</span>
 						</div>
 						{project.deadline && (
 							<div className="flex justify-between items-center">
 								<span className="text-sm text-muted-foreground">Deadline</span>
 								<span className="font-medium">
-									{new Date(project.deadline).toLocaleDateString("en-US", {
-										year: "numeric",
-										month: "long",
-										day: "numeric",
-									})}
+									{format(project.deadline, "MMMM d, yyyy")}
 								</span>
 							</div>
 						)}
@@ -200,15 +202,23 @@ const ProjectDetails = async ({ params }: Props) => {
 					fit for this job.
 				</p>
 				<div className="flex gap-4 justify-center flex-wrap">
-					<Link
-						href={`/projects/${projectId}/proposal`}
-						className="px-4 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 duration-300"
-					>
-						Submit a Proposal
-					</Link>
-					<Button variant="outline" size="lg">
-						Contact Client
-					</Button>
+					{isAcceptingProposals ? (
+						<>
+							<Link
+								href={`/projects/${projectId}/proposal`}
+								className="px-4 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 duration-300"
+							>
+								Submit a Proposal
+							</Link>
+							<Button variant="outline" size="lg">
+								Contact Client
+							</Button>
+						</>
+					) : (
+						<p className="text-sm text-muted-foreground">
+							This project is no longer accepting proposals.
+						</p>
+					)}
 				</div>
 			</div>
 		</main>

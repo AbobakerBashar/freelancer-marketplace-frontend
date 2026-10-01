@@ -47,3 +47,5 @@ CLIENT
 5. View Proposals
    ↓
 6. Accept / Reject Proposal
+
+add view proposal page

@@ -28,6 +28,8 @@ import { Textarea } from "../ui/textarea";
 
 import { useSubmitProposal } from "@/features/proposals/hooks";
 import { useRouter } from "next/navigation";
+
+import { useState } from "react";
 import { toast } from "sonner";
 
 type ProposalFormProps = {
@@ -36,6 +38,7 @@ type ProposalFormProps = {
 
 const ProposalForm = ({ projectId }: ProposalFormProps) => {
 	const router = useRouter();
+	const [error, setError] = useState<string | null>(null);
 
 	const { mutateAsync: submitProposal, isPending: isSubmitting } =
 		useSubmitProposal();
@@ -55,9 +58,20 @@ const ProposalForm = ({ projectId }: ProposalFormProps) => {
 		const res = await submitProposal({ data, projectId });
 
 		if (res.success) {
-			router.push(`/projects/${projectId}`);
+			toast.success("Proposal submitted successfully!");
+			router.refresh();
+			router.replace(`/dashboard/my-proposals/${res.proposal?.id}/view`);
 		} else {
-			toast.error(res.message || "Failed to submit proposal");
+			if (res.errors) {
+				Object.entries(res.errors).forEach(([field, message]) => {
+					form.setError(field as keyof ProposalInput, {
+						type: "manual",
+						message: message as string,
+					});
+				});
+			}
+
+			if (res.message) setError(res.message);
 		}
 	};
 
@@ -150,6 +164,10 @@ const ProposalForm = ({ projectId }: ProposalFormProps) => {
 									</FormItem>
 								)}
 							/>
+
+							{/* Display general error message if any */}
+							{error && <p className="text-sm text-destructive">{error}</p>}
+
 							{/* Submit Button */}
 							<div className="flex gap-3 pt-4">
 								<Button
