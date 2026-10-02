@@ -113,3 +113,24 @@ export type ProjectFormOutput = z.output<typeof projectCreateSchema>;
 
 export type ProjectEditFormInput = z.input<typeof projectEditSchema>;
 export type ProjectEditFormOutput = z.output<typeof projectEditSchema>;
+
+export interface ActiveProject extends Project {
+	client: {
+		id: string;
+		name: string;
+		email: string;
+	};
+
+	freelancer?: {
+		id: string;
+		name: string;
+		email: string;
+	};
+}
+
+export type ActiveProjectsResponse = {
+	success: boolean;
+	message?: string;
+	projects?: ActiveProject[];
+	statusCode?: number;
+};

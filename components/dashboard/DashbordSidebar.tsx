@@ -1,4 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+	BriefcaseBusiness,
+	FileText,
+	FolderKanban,
+	LayoutDashboard,
+} from "lucide-react";
 import {
 	Sidebar,
 	SidebarContent,
@@ -8,33 +17,74 @@ import {
 import LogoutButton from "../LogoutButton";
 
 const links = [
-	{ name: "Dashboard", href: "/dashboard" },
-	{ name: "My Projects", href: "/dashboard/my-projects" },
-	{ name: "My Proposals", href: "/dashboard/my-proposals" },
-	{ name: "Settings", href: "/dashboard/settings" },
-	{ name: "Profile", href: "/dashboard/profile" },
+	{ name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+	{ name: "My projects", href: "/dashboard/my-projects", icon: FolderKanban },
+	{
+		name: "Active projects",
+		href: "/dashboard/my-active-projects",
+		icon: BriefcaseBusiness,
+	},
+	{ name: "My proposals", href: "/dashboard/my-proposals", icon: FileText },
 ];
 
 const DashbordSidebar = () => {
+	const pathname = usePathname();
+
 	return (
-		<Sidebar>
-			<SidebarHeader className="mt-20">Sidebar Header</SidebarHeader>
-			<SidebarContent>
-				<ul>
-					{links.map((link) => (
-						<li key={link.href} className="m-2">
-							<Link
-								href={link.href}
-								className="px-2 py-1 bg-secondary text-secondary-foreground hover:bg-secondary/80 w-full block rounded-md"
-							>
-								{link.name}
-							</Link>
-						</li>
-					))}
-				</ul>
+		<Sidebar className="border-r border-sidebar-border bg-sidebar">
+			<SidebarHeader className="border-b border-sidebar-border/70 h-20 pl-3">
+				<Link
+					href="/dashboard"
+					className="flex items-center justify-start gap-3 rounded-lg h-full"
+				>
+					<span className="grid size-11 shrink-0 place-items-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground shadow-md shadow-sidebar-primary/20">
+						<BriefcaseBusiness className="size-5" />
+					</span>
+					<span className="min-w-0">
+						<span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/55">
+							Freelance
+						</span>
+						<span className="mt-0.5 block truncate text-sm font-semibold text-sidebar-foreground">
+							Workspace
+						</span>
+					</span>
+				</Link>
+			</SidebarHeader>
+			<SidebarContent className="px-3 py-6">
+				<nav aria-label="Dashboard navigation">
+					<p className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-sidebar-foreground/45">
+						Workspace
+					</p>
+					<ul className="space-y-1">
+						{links.map((link) => {
+							const active =
+								pathname === link.href ||
+								(link.href !== "/dashboard" &&
+									pathname.startsWith(`${link.href}/`));
+							const Icon = link.icon;
+
+							return (
+								<li key={link.href}>
+									<Link
+										href={link.href}
+										aria-current={active ? "page" : undefined}
+										className={`group flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors ${
+											active
+												? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm shadow-sidebar-primary/15"
+												: "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+										}`}
+									>
+										<Icon className="size-4.5 shrink-0 transition-transform group-hover:scale-105" />
+										<span className="truncate">{link.name}</span>
+									</Link>
+								</li>
+							);
+						})}
+					</ul>
+				</nav>
 			</SidebarContent>
-			<SidebarFooter className="p-4">
-				<LogoutButton />
+			<SidebarFooter className="border-t border-sidebar-border/70 p-4">
+				<LogoutButton className="w-full justify-start bg-transparent text-sidebar-foreground/65 shadow-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
 			</SidebarFooter>
 		</Sidebar>
 	);
