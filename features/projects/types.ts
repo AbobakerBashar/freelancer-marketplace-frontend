@@ -1,5 +1,7 @@
 import { projectCreateSchema, projectEditSchema } from "@/schemas/project";
 import z from "zod";
+import { User } from "../auth/types";
+import { Proposal } from "../proposals/types";
 
 export type Category = {
 	category: string;
@@ -60,6 +62,7 @@ export type ProjectsResponse = {
 	message?: string;
 	projects: Project[];
 	pagination: Pagination;
+	statusCode?: number;
 };
 
 export type ProjectResponse = {
@@ -132,5 +135,20 @@ export type ActiveProjectsResponse = {
 	success: boolean;
 	message?: string;
 	projects?: ActiveProject[];
+	statusCode?: number;
+};
+
+export type ProjectWorkspace = {
+	project: Project;
+	client: Partial<User>;
+	proposal: Proposal;
+	freelancer?: Partial<User>;
+	currentUserRole: "CLIENT" | "FREELANCER";
+};
+
+export type ProjectWorkspaceResponse = {
+	success: boolean;
+	message?: string;
+	workspace?: ProjectWorkspace;
 	statusCode?: number;
 };

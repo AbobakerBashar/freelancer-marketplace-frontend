@@ -59,7 +59,7 @@ export default async function MyActiveProjectsPage() {
 					</p>
 				</div>
 
-				<p className="rounded-md border bg-card px-3 py-2 text-sm capitalize text-muted-foreground">
+				<p className="rounded-md w-fit border bg-card px-3 py-2 text-sm capitalize text-muted-foreground">
 					{role} account
 				</p>
 			</section>
@@ -87,9 +87,11 @@ function ActiveProjectCard({
 	project: ActiveProject;
 	role: ViewerRole;
 }) {
+	const isActive = project.status === "IN_PROGRESS";
+
 	return (
 		<Card className="rounded-lg border-border/70 bg-card/90 transition-shadow hover:shadow-md">
-			<CardHeader className="gap-4 pb-4 sm:flex-row sm:items-start sm:justify-between">
+			<CardHeader className="gap-4 pb-4 flex flex-col sm:flex-row items-start sm:justify-between">
 				<div className="space-y-2">
 					<div className="flex flex-wrap items-center gap-2">
 						<Badge variant="secondary" className="font-medium capitalize">
@@ -102,12 +104,24 @@ function ActiveProjectCard({
 						Updated {format(project.updatedAt, "MMM dd, yyyy")}
 					</p>
 				</div>
-				<Link href={`/projects/${project.id}`}>
-					<Button variant="outline" size="sm" className="w-full sm:w-auto">
-						View project
-						<ArrowUpRight className="size-4" />
-					</Button>
-				</Link>
+				<div className="flex gap-3">
+					{/* Add way to navigate to project workspace if is active */}
+					{isActive && (
+						<Link href={`/projects/${project.id}/workspace`}>
+							<Button variant="default" className="w-full sm:w-auto">
+								<ArrowUpRight className="size-4" />
+								Open Workspace
+							</Button>
+						</Link>
+					)}
+
+					<Link href={`/projects/${project.id}`}>
+						<Button variant="outline" className="w-full sm:w-auto">
+							<ArrowUpRight className="size-4" />
+							View Project
+						</Button>
+					</Link>
+				</div>
 			</CardHeader>
 
 			<CardContent className="space-y-5">

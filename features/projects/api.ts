@@ -8,6 +8,7 @@ import type {
 	ProjectResponse,
 	ProjectsResponse,
 	ProjectStatistics,
+	ProjectWorkspaceResponse,
 } from "./types";
 import axios from "axios";
 import { getAuthToken } from "@/utils/auth";
@@ -231,6 +232,38 @@ export const getActiveProjects = async (): Promise<ActiveProjectsResponse> => {
 		} else
 			return {
 				message: "An error occurred while retrieving the active projects.",
+				statusCode: 500,
+				success: false,
+			};
+	}
+};
+
+export const getProjectWorkspace = async (
+	projectId: string,
+): Promise<ProjectWorkspaceResponse> => {
+	try {
+		const token = await getAuthToken();
+		// Redirect to signin if no token
+		if (!token) redirect("/auth/signin");
+
+		const res = await api.get(`/projects/${projectId}/workspace`, {
+			headers: {
+				cookie: `jwt=${token}`,
+			},
+		});
+		return res.data;
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			return {
+				message:
+					error.response?.data?.message ||
+					"An error occurred while retrieving the project workspace.",
+				statusCode: error.response?.status || 500,
+				success: false,
+			};
+		} else
+			return {
+				message: "An error occurred while retrieving the project workspace.",
 				statusCode: 500,
 				success: false,
 			};
