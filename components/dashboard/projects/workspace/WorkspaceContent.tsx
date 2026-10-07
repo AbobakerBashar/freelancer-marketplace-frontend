@@ -2,8 +2,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User } from "@/features/auth/types";
 import { Project } from "@/features/projects/types";
 import { Proposal } from "@/features/proposals/types";
-import OverviewContent from "./OverviewContent";
 import DeatailsContent from "./DeatailsContent";
+import OverviewContent from "./OverviewContent";
 import ProposalContent from "./ProposalContent";
 
 type WorkspaceContentProps = {
@@ -26,7 +26,6 @@ export default async function WorkspaceContent({
 					<TabsTrigger value="overview">Overview</TabsTrigger>
 					<TabsTrigger value="proposal">Proposal</TabsTrigger>
 					<TabsTrigger value="details">Details</TabsTrigger>
-					<TabsTrigger value="messages">Messages</TabsTrigger>
 					<TabsTrigger value="activity">Activity</TabsTrigger>
 				</TabsList>
 			</div>

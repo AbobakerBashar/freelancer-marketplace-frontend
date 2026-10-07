@@ -143,6 +143,7 @@ export type ProjectWorkspace = {
 	client: Partial<User>;
 	proposal: Proposal;
 	freelancer?: Partial<User>;
+	conversationId: string;
 	currentUserRole: "CLIENT" | "FREELANCER";
 };
 
