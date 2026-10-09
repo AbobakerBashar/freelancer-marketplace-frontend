@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { getUser } from "@/features/auth/api";
+
 export default async function proxy(req: NextRequest) {
 	const pathname = req.nextUrl.pathname;
 	const isAuthPage =
@@ -8,19 +10,39 @@ export default async function proxy(req: NextRequest) {
 
 	const isProtected =
 		pathname.startsWith("/dashboard") ||
-		pathname.startsWith("/cart") ||
-		pathname.startsWith("/checkout") ||
+		pathname.includes("/workspace") ||
 		pathname.includes("/proposal");
 
-	const token = req.cookies.get("jwt")?.value;
+	const user = await getUser();
 
-	if (!token && isProtected) {
+	const isLoggedIn = user.success && user.user !== null;
+	const role = user.user?.role || "guest";
+
+	if (!isLoggedIn && isProtected) {
 		return NextResponse.redirect(new URL("/auth/signin", req.url));
 	}
 
 	// If is an auth page and the user is already logged in, redirect to home page
-	if (token && isAuthPage) {
-		return NextResponse.redirect(new URL("/", req.url));
+	if (isLoggedIn && isAuthPage) {
+		return NextResponse.redirect(new URL("/dashboard", req.url));
+	}
+
+	// If the user is a freelancer and tries to access the projects page, redirect to the dashboard
+	if (
+		isLoggedIn &&
+		role === "FREELANCER" &&
+		pathname.startsWith("/dashboard/my-projects")
+	) {
+		return NextResponse.redirect(new URL("/dashboard", req.url));
+	}
+
+	// If the user is a client and tries to access the projects page, redirect to the dashboard
+	if (
+		isLoggedIn &&
+		role === "CLIENT" &&
+		pathname.startsWith("/dashboard/my-proposals")
+	) {
+		return NextResponse.redirect(new URL("/dashboard", req.url));
 	}
 
 	// If the user is logged in and trying to access a protected page, allow access
@@ -30,9 +52,8 @@ export default async function proxy(req: NextRequest) {
 export const config = {
 	matcher: [
 		"/dashboard/:path*",
-		"/cart",
-		"/checkout/:path*",
 		"/projects/:path*/proposal/:path*",
+		"/projects/:path*/workspace/:path*",
 		"/auth/signin",
 		"/auth/register",
 	],

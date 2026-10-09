@@ -33,7 +33,7 @@ export default function Signin() {
 
 		const res = await signIn(data);
 
-		if (res.success) router.replace("/");
+		if (res.success) router.replace("/dashboard");
 
 		if (!res.success) {
 			if (res.errors) setError(res.errors);

@@ -7,6 +7,7 @@ import {
 	FileText,
 	FolderKanban,
 	LayoutDashboard,
+	UserRound,
 } from "lucide-react";
 import {
 	Sidebar,
@@ -15,6 +16,7 @@ import {
 	SidebarHeader,
 } from "../ui/sidebar";
 import LogoutButton from "../LogoutButton";
+import { useGetUser } from "@/features/auth/hooks";
 
 const links = [
 	{ name: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -25,10 +27,13 @@ const links = [
 		icon: BriefcaseBusiness,
 	},
 	{ name: "My proposals", href: "/dashboard/my-proposals", icon: FileText },
+	{ name: "Profile", href: "/dashboard/profile", icon: UserRound },
 ];
 
 const DashbordSidebar = () => {
 	const pathname = usePathname();
+	const { data, isLoading: isLoadingUser } = useGetUser();
+	const user = data?.user;
 
 	return (
 		<Sidebar className="border-r border-sidebar-border bg-sidebar">
@@ -63,20 +68,30 @@ const DashbordSidebar = () => {
 									pathname.startsWith(`${link.href}/`));
 							const Icon = link.icon;
 
+							if (
+								(user?.role === "CLIENT" &&
+									link.href === "/dashboard/my-proposals") ||
+								(user?.role === "FREELANCER" &&
+									link.href === "/dashboard/my-projects")
+							)
+								return null;
+
 							return (
 								<li key={link.href}>
-									<Link
-										href={link.href}
-										aria-current={active ? "page" : undefined}
-										className={`group flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors ${
-											active
-												? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm shadow-sidebar-primary/15"
-												: "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-										}`}
-									>
-										<Icon className="size-4.5 shrink-0 transition-transform group-hover:scale-105" />
-										<span className="truncate">{link.name}</span>
-									</Link>
+									{!isLoadingUser && (
+										<Link
+											href={link.href}
+											aria-current={active ? "page" : undefined}
+											className={`group flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors ${
+												active
+													? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm shadow-sidebar-primary/15"
+													: "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+											}`}
+										>
+											<Icon className="size-4.5 shrink-0 transition-transform group-hover:scale-105" />
+											<span className="truncate">{link.name}</span>
+										</Link>
+									)}
 								</li>
 							);
 						})}

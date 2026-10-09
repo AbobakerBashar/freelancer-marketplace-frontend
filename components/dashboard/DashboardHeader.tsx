@@ -16,7 +16,7 @@ async function Header() {
 
 	return (
 		<header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl flex h-20 items-center justify-between gap-4 page-container">
-			<nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
+			<nav className="hidden items-center gap-8 text-sm text-muted-foreground lg:flex">
 				<Link className="transition-colors hover:text-foreground" href="/">
 					Home
 				</Link>
