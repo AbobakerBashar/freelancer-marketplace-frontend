@@ -46,18 +46,26 @@ export const getUser = async (): Promise<AuthResponse> => {
 		};
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
-			if (error.response?.data) return error.response?.data;
+			if (error.response?.data)
+				return {
+					success: false,
+					errors: error.response.data.errors,
+					user: null,
+					statusCode: error.response.status,
+				};
 			else
 				return {
 					success: false,
 					message: "An error occurred while fetching the user.",
 					user: null,
+					statusCode: error.response?.status,
 				};
 		}
 		return {
 			success: false,
 			message: "An error occurred while fetching the user.",
 			user: null,
+			statusCode: 500,
 		};
 	}
 };

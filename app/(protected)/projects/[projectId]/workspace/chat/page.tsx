@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getConversation } from "@/features/conversations/api";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { getUser } from "@/features/auth/api";
 
 export const metadata: Metadata = {
 	title: "Workspace",
@@ -13,13 +14,30 @@ export const metadata: Metadata = {
 };
 
 const loaddata = async (projectId: string) => {
-	const res = await getConversation(projectId);
-	if (!res.success || !res.data) {
-		if (res.statusCode === 404) notFound();
-		else if (res.statusCode === 401) redirect("/auth/signin");
-		else throw new Error(res.message || "Failed to load conversation data");
+	const [conversationResult, userResult] = await Promise.all([
+		getConversation(projectId),
+		getUser(),
+	]);
+
+	if (!conversationResult.success || !conversationResult.data) {
+		if (conversationResult.statusCode === 404) notFound();
+		else if (conversationResult.statusCode === 401) redirect("/auth/signin");
+		else
+			throw new Error(
+				conversationResult.message || "Failed to load conversation data",
+			);
 	}
-	return res.data;
+
+	if (!userResult.success || !userResult.user) {
+		if (userResult.statusCode === 404) notFound();
+		else if (userResult.statusCode === 401) redirect("/auth/signin");
+		else throw new Error(userResult.message || "Failed to load user data");
+	}
+
+	return {
+		conversation: conversationResult.data,
+		user: userResult.user,
+	};
 };
 
 type Props = {
@@ -31,7 +49,7 @@ type Props = {
 const Page = async ({ params }: Props) => {
 	const { projectId } = await params;
 
-	const conversationData = await loaddata(projectId);
+	const { conversation, user } = await loaddata(projectId);
 
 	return (
 		<main className="page-container h-[calc(100vh-4rem)] bg-linear-to-b from-background to-muted/20 py-10 sm:py-12 flex flex-col">
@@ -61,8 +79,9 @@ const Page = async ({ params }: Props) => {
 			</section>
 
 			<Messages
-				conversationId={conversationData.conversationId}
-				messages={conversationData.messages}
+				conversationId={conversation.conversationId}
+				messages={conversation.messages}
+				user={user}
 			/>
 		</main>
 	);

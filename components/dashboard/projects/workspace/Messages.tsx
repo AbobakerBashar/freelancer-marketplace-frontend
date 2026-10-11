@@ -1,22 +1,33 @@
 "use client";
 
+import { Avatar } from "@/components/ui/avatar";
+import { User } from "@/features/auth/types";
 import { Message } from "@/features/conversations/types";
+import { formatMessageDate } from "@/utils/messages";
 import { socket } from "@/utils/socket";
-import { format } from "date-fns";
 import { MessageCircle, UserRound } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import SendMessageArea from "./SendMessageArea";
+
+const isSentByCurrentUser = (currentUserId: string, senderId: string) => {
+	return senderId === currentUserId;
+};
 
 type Props = {
 	conversationId: string;
 	messages: Omit<Message, "conversationId">[];
+	user: User;
 };
 
-const Messages = ({ conversationId, messages: initialMessages }: Props) => {
+const Messages = ({
+	conversationId,
+	messages: initialMessages,
+	user,
+}: Props) => {
 	const [messages, setMessages] =
 		useState<Omit<Message, "conversationId">[]>(initialMessages);
 	const [error, setError] = useState<string | null>(null);
-	console.log("Initial messages:", error);
 
 	const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -37,7 +48,7 @@ const Messages = ({ conversationId, messages: initialMessages }: Props) => {
 		};
 
 		const handleNewMessage = (message: Omit<Message, "conversationId">) => {
-			setMessages((prev) => [...prev, message]);
+			setMessages((prev) => [message, ...prev]);
 		};
 
 		const handleConnectError = () => {
@@ -51,9 +62,19 @@ const Messages = ({ conversationId, messages: initialMessages }: Props) => {
 		socket.connect();
 
 		return () => {
-			socket.emit("conversation:leave", {
-				conversationId,
-			});
+			socket.emit(
+				"conversation:leave",
+				{
+					conversationId,
+				},
+				(response: { success: boolean; message?: string }) => {
+					if (!response.success) {
+						console.error(
+							response.message || "Failed to leave the conversation",
+						);
+					}
+				},
+			);
 
 			socket.off("connect", handleConnect);
 			socket.off("message:new", handleNewMessage);
@@ -70,6 +91,8 @@ const Messages = ({ conversationId, messages: initialMessages }: Props) => {
 			behavior: "smooth",
 		});
 	}, [messages]);
+
+	const displyedMessages = [...messages].reverse();
 
 	return (
 		<section className="flex-1 flex flex-col overflow-hidden rounded-lg border bg-background shadow-sm">
@@ -94,22 +117,35 @@ const Messages = ({ conversationId, messages: initialMessages }: Props) => {
 					</div>
 				) : (
 					<div className="space-y-5">
-						{messages.map((ms) => (
+						{displyedMessages.map((ms) => (
 							<div key={ms.id} className="flex gap-3">
-								<div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-									<UserRound className="size-4" />
-								</div>
+								<Avatar className="flex w-10 h-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+									{ms.sender.avatarUrl ? (
+										<Image
+											src={ms.sender.avatarUrl}
+											alt={ms.sender.name}
+											fill
+											sizes="100%"
+											className="rounded-full object-cover"
+										/>
+									) : (
+										<UserRound className="size-5" />
+									)}
+								</Avatar>
 								<div className="min-w-0 flex-1">
 									<div className="mb-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-										<p className="text-sm font-medium">{ms.sender.name}</p>
+										{isSentByCurrentUser(user.id, ms.sender.id) ? (
+											<p className="text-sm font-medium">You</p>
+										) : (
+											<p className="text-sm font-medium">{ms.sender.name}</p>
+										)}
 										<p className="text-xs text-muted-foreground">
-											{format(
-												new Date(ms.createdAt),
-												"MMM d, yyyy 'at' h:mm a",
-											)}
+											{formatMessageDate(ms.createdAt)}
 										</p>
 									</div>
-									<div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3">
+									<div
+										className={`rounded-2xl rounded-tl-sm px-4 py-3 ${isSentByCurrentUser(user.id, ms.sender.id) ? "bg-primary/10" : "bg-muted"}`}
+									>
 										<p className="whitespace-pre-wrap text-sm leading-6">
 											{ms.content || "This message has no text content."}
 										</p>

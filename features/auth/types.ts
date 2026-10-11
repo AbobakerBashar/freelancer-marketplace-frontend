@@ -19,4 +19,5 @@ export type AuthResponse = {
 	message?: string;
 	user: User | null;
 	errors?: Record<string, string>;
+	statusCode?: number;
 };

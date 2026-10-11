@@ -56,7 +56,7 @@ const SendMessageArea = ({ conversationId, setError }: Props) => {
 				rows={1}
 				value={content}
 				onChange={(e) => setContent(e.target.value)}
-				className="min-h-10 resize-none bg-background"
+				className="min-h-10 max-h-32 resize-none bg-background z-50"
 			/>
 			<Button
 				type="submit"
