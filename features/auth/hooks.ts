@@ -1,9 +1,12 @@
 import {
+	changeUserEmail,
 	getUser,
 	registerUser,
 	signInUser,
 	updateProfile,
 	updateUserAvatar,
+	changeUserPassword,
+	deactivateUserAccount,
 } from "@/features/auth/api";
 import { LoginInput, RegisterInput } from "@/schemas/auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -46,5 +49,24 @@ export const useUpdateAvatar = () => {
 			// Update the user data in the query cache after a successful avatar update
 			if (data.user) queryClient.setQueryData(["user"], data.user);
 		},
+	});
+};
+
+export const useChangeEmail = () => {
+	return useMutation({
+		mutationFn: async (newEmail: string) => await changeUserEmail(newEmail),
+	});
+};
+
+export const useChangePassword = () => {
+	return useMutation({
+		mutationFn: async (newPassword: string) =>
+			await changeUserPassword(newPassword),
+	});
+};
+
+export const useDeactivateAccount = () => {
+	return useMutation({
+		mutationFn: deactivateUserAccount,
 	});
 };

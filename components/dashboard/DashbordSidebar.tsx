@@ -8,6 +8,7 @@ import {
 	FolderKanban,
 	LayoutDashboard,
 	UserRound,
+	Settings,
 } from "lucide-react";
 import {
 	Sidebar,
@@ -28,6 +29,7 @@ const links = [
 	},
 	{ name: "My proposals", href: "/dashboard/my-proposals", icon: FileText },
 	{ name: "Profile", href: "/dashboard/profile", icon: UserRound },
+	{ name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 const DashbordSidebar = () => {

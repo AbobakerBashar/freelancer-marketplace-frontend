@@ -21,6 +21,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import type { AuthResponse } from "./types";
 import { ProfileFormInput } from "@/schemas/profile";
+import { redirect } from "next/navigation";
 
 export const getUser = async (): Promise<AuthResponse> => {
 	try {
@@ -222,5 +223,136 @@ export const updateUserAvatar = async (
 			message: "An error occurred while updating your avatar.",
 			user: null,
 		};
+	}
+};
+
+export const changeUserEmail = async (
+	newEmail: string,
+): Promise<AuthResponse> => {
+	try {
+		const token = await getAuthToken();
+		if (!token) {
+			return redirect("/auth/signin");
+		}
+		const response = await api.post(
+			"/auth/change-email",
+			{ newEmail },
+			{
+				headers: { cookie: `jwt=${token}` },
+			},
+		);
+
+		return {
+			success: true,
+			message: "Email updated successfully.",
+			user: response.data.user,
+		};
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			if (error.response?.data?.errors)
+				return {
+					user: null,
+					errors: error.response.data.errors,
+					success: false,
+				};
+
+			return {
+				success: false,
+				message:
+					error.response?.data?.message ||
+					"An error occurred while updating your email.",
+				user: null,
+			};
+		}
+
+		return {
+			success: false,
+			message: "An error occurred while updating your email.",
+			user: null,
+		};
+	}
+};
+
+export const changeUserPassword = async (
+	newPassword: string,
+): Promise<AuthResponse> => {
+	try {
+		const token = await getAuthToken();
+		if (!token) {
+			return redirect("/auth/signin");
+		}
+		const response = await api.post(
+			"/auth/change-password",
+			{ newPassword },
+			{
+				headers: { cookie: `jwt=${token}` },
+			},
+		);
+
+		return {
+			success: true,
+			message: "Password updated successfully.",
+			user: response.data.user,
+		};
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			if (error.response?.data?.errors)
+				return {
+					user: null,
+					errors: error.response.data.errors,
+					success: false,
+				};
+
+			return {
+				success: false,
+				message:
+					error.response?.data?.message ||
+					"An error occurred while updating your password.",
+				user: null,
+			};
+		}
+
+		return {
+			success: false,
+			message: "An error occurred while updating your password.",
+			user: null,
+		};
+	}
+};
+
+export const deactivateUserAccount = async (): Promise<AuthResponse> => {
+	try {
+		const token = await getAuthToken();
+		if (!token) {
+			return redirect("/auth/signin");
+		}
+		const response = await api.post(
+			"/auth/deactivate",
+			{},
+			{
+				headers: { cookie: `jwt=${token}` },
+			},
+		);
+		return {
+			success: true,
+			message: "Account deactivated successfully.",
+			user: response.data.user,
+		};
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			return {
+				user: null,
+				message:
+					error.response?.data?.message ||
+					"An error occurred while deactivating your account.",
+				success: false,
+			};
+		} else {
+			return {
+				success: false,
+				message: "An error occurred while deactivating your account.",
+				user: null,
+			};
+		}
 	}
 };

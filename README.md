@@ -3,10 +3,10 @@ A. Authentication and account security
 [ x ] Secure password hashing and HTTP-only JWT cookie
 [ x ] Get the current authenticated user (/api/auth/me)
 [ x ] Logout and clear the authentication cookie
-[ ] Update profile and change password
+[ x ] Update profile and change password
 [ ] Forgot-password and reset-password flow
 [ x ] Role-based authorization for CLIENT and FREELANCER
-[ ] Account activation/deactivation and safe account deletion
+[ x ] Account activation/deactivation and safe account deletion
 [ x ] Protect routes and API endpoints against unauthorized access
 [ x ] Validate input with Zod and return consistent errors
 
